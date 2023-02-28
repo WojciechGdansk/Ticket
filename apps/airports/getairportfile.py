@@ -1,11 +1,13 @@
 import json
+import os
+
 
 import requests
 
 url = "https://airports-iata.p.rapidapi.com/airports"
 
 headers = {
-    "X-RapidAPI-Key": "b5c368ee80msh80c8917c3274faep1be84djsnd2682d017abc",
+    "X-RapidAPI-Key": os.environ.get('RAPID_KEY'),
     "X-RapidAPI-Host": "airports-iata.p.rapidapi.com"
 }
 
@@ -18,5 +20,6 @@ with open("/home/wojciech/PycharmProjects/Tickets/airportsapi.txt", "w") as f:
 
 with open("/home/wojciech/PycharmProjects/Tickets/airportsapi.txt", "r") as f:
     json_object = json.load(f)
-    for item in json_object:
-        print(item)
+    # for item in json_object:
+    #     print(item)
+    #     print(item['iataCode'])
