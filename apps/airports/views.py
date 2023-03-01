@@ -15,6 +15,10 @@ class AirportList(View):
             return HttpResponse(json_object)
 
 
+class MainView(View):
+    def get(self, request):
+        return render(request, 'index.html')
+
 
 
 
