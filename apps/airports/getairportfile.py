@@ -1,13 +1,13 @@
 import json
 import os
-
+from Tickets.settings import API_KEY
 
 import requests
 
 url = "https://airports-iata.p.rapidapi.com/airports"
 
 headers = {
-    "X-RapidAPI-Key": os.environ.get('RAPID_KEY'),
+    "X-RapidAPI-Key": API_KEY,
     "X-RapidAPI-Host": "airports-iata.p.rapidapi.com"
 }
 
