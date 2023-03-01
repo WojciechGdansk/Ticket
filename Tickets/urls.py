@@ -22,5 +22,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('airportlist/', views.AirportList.as_view()),
     path('', views.MainView.as_view()),
+    path('airports/<slug:slug>', views.AirportSearch.as_view())
 
 ]

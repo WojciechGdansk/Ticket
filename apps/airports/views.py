@@ -1,6 +1,6 @@
 import json
-
-from django.http import HttpResponse
+from django.db.models import Q
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.views import View
 from apps.airports.models import Airports
@@ -20,5 +20,17 @@ class MainView(View):
         return render(request, 'index.html')
 
 
-
+class AirportSearch(View):
+    def get(self, request, slug):
+        result = Airports.objects.filter(Q(iata__icontains=slug) | Q(city__icontains=slug))
+        final_list = []
+        for item in result:
+            dic = {
+                'iata': item.iata,
+                'location_name': item.location_name,
+                'city': item.city,
+                'country': item.country
+            }
+            final_list.append(dic)
+        return JsonResponse({"result": final_list})
 
