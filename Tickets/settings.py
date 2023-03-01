@@ -32,6 +32,7 @@ DEBUG = int(os.environ.get('DEBUG', default=0))
 ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', '').split()
 
 API_KEY = os.environ.get('RAPID_KEY')
+AIRPORT_KEY = os.environ.get('AIRPORT_KEY')
 # Application definition
 
 INSTALLED_APPS = [

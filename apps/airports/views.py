@@ -5,6 +5,7 @@ from django.shortcuts import render
 from django.views import View
 from apps.airports.models import Airports
 import requests
+from Tickets.settings import API_KEY
 
 
 # Create your views here.
@@ -21,8 +22,9 @@ class MainView(View):
 
 
 class AirportSearch(View):
-    def get(self, request, slug):
-        result = Airports.objects.filter(Q(iata__icontains=slug) | Q(city__icontains=slug))
+    def get(self, request):
+        search_airport = request.headers['airport']
+        result = Airports.objects.filter(Q(iata__icontains=search_airport) | Q(city__icontains=search_airport))
         final_list = []
         for item in result:
             dic = {
@@ -32,5 +34,9 @@ class AirportSearch(View):
                 'country': item.country
             }
             final_list.append(dic)
+            if len(final_list) == 10:
+                break
         return JsonResponse({"result": final_list})
+
+
 
