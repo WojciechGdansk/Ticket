@@ -1,0 +1,18 @@
+{% extends 'index.html' %}
+{% block script %}
+    <script>
+        {#let departureCity = document.querySelector('#departure')#}
+        {#let arrivalCity = document.querySelector("#arrival")#}
+
+    </script>
+{% endblock %}
+{% block content %}
+czemu tego nie widac:(
+    results
+    {% for item in data %}
+        {{ item.time_flight }}
+        {{ item.test }}
+        {{ item.departure_time }}
+    {% endfor %}
+
+{% endblock %}

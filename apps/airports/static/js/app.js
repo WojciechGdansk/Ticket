@@ -5,11 +5,13 @@ let departurelist = document.querySelector('#departurelist')
 let arrivallist = document.querySelector('#arrivallist')
 let elementLi = document.querySelector('#element-li')
 let elementLiArrival = document.querySelector('#element-li-arrival')
+let submitButton = document.querySelector('#submit-button')
 
 departureCity.addEventListener('keyup', ()=> {
     departurelist.innerHTML = ''
     if (departureCity.value.length !== 0) {
-    fetch(`/airports/`, {headers: {"airport": `${departureCity.value}`}}).then(resp => {
+    let encodedDepartureCity = encodeURIComponent(departureCity.value)
+    fetch(`/airports/airport?airport=${encodedDepartureCity}`).then(resp => {
         if (!resp.ok) {
             alert("Błąd")
         }
@@ -42,7 +44,8 @@ departureCity.addEventListener('keyup', ()=> {
 arrivalCity.addEventListener('keyup', ()=> {
     arrivallist.innerHTML = ''
     if (arrivalCity.value.length !== 0) {
-    fetch(`/airports/`, {headers: {'airport': `${arrivalCity.value}`}}).then(resp => {
+    let encodedArrivalCity = encodeURIComponent(arrivalCity.value)
+    fetch(`/airports/airport?airport=${encodedArrivalCity}` ).then(resp => {
         if (!resp.ok) {
             alert("Błąd")
         }
@@ -69,3 +72,42 @@ arrivalCity.addEventListener('keyup', ()=> {
         })
         }
 })
+
+submitButton.addEventListener('click', ()=>{
+    if (departureCity.value.length<1 || arrivalCity.value.length < 1 || flightDate.value.length <1) {
+        alert("Uzupełnij wszystkie pola")
+    }
+    else {
+        let encodedDepartureCity = encodeURIComponent(departureCity.value)
+        fetch(`/airports/airport?airport=${encodedDepartureCity}`).then(resp => {
+        if (!resp.ok) {
+            alert("Błąd")
+        }
+        return resp.json();
+    })
+        .then((resp)=>{
+            let departFrom = resp.result[0]['iata']
+            localStorage.setItem("departure", departFrom)
+            })
+        let encodedArrivalCity = encodeURIComponent(arrivalCity.value)
+        fetch(`/airports/airport?airport=${encodedArrivalCity}` )
+            .then(resp=>{
+                if (!resp.ok) {
+                    alert("Nie ma takiego lotniska")
+                }
+                return resp.json()
+            })
+            .then((resp)=>{
+                let arriveTo = resp.result[0]['iata']
+                localStorage.setItem('arrival', arriveTo)
+            })
+
+        if (localStorage.getItem('departure') === localStorage.getItem('arrival')) {
+            alert("Wylot i przylot na to samo lotnisko- błąd")
+        }
+        window.location.href = `/routes/search?depart=${localStorage.getItem('departure')}&arrive=${localStorage.getItem('arrival')}&date=${flightDate.value}`
+        localStorage.clear()
+
+    }
+    }
+)
