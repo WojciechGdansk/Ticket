@@ -1,4 +1,6 @@
 
 .ul-list-class {
     list-style: none;
+    position: absolute;
+    background-color: white;
 }

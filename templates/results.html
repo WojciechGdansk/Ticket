@@ -7,12 +7,189 @@
     </script>
 {% endblock %}
 {% block content %}
-czemu tego nie widac:(
-    results
+
     {% for item in data %}
-        {{ item.time_flight }}
-        {{ item.test }}
-        {{ item.departure_time }}
+        <div class="border border-dark">
+            <p class="text-center">
+                {{ item.departure_date }}
+                {{ item.departure_time }}
+                {{ item.depart_from_code }}
+                {{ item.depart_from_city}}
+                {{ item.arrival_date}}
+                {{ item.arrival_time }}
+                {{ item.arrival_code }}
+                {{ item.arrival_city }}
+                {{ item.total_trip_time}}
+            </p>
+            <div class="container">
+                <div class="row">
+                    <div class="col-10">
+                    </div>
+                    <div class="col-1">
+                        <button type="button" value="{{ item }}" class="btn btn-primary">Wybierz</button>
+                    </div>
+                </div>
+            </div>
+
+        {% if item.legs == 1 %}
+            <div class="container">
+                <div class="row">
+                    <div class="col-1">
+                        {{ item.details.1.airline }}<BR>
+                        {{ item.details.1.flight_number }}
+                    </div>
+                    <div class="col-3">
+                        {{ item.details.1.leg_departure_date }}
+                        {{ item.details.1.leg_departure_time }}<br>
+                        {{ item.details.1.depart_from_code }}
+                        {{ item.details.1.depart_from_city }}
+                    </div>
+                    <div class="col-3">
+                        <span>&#10230;</span><BR>
+                        {{ item.details.1.flight_time }}
+                    </div>
+                    <div class="col-3">
+                        {{ item.details.1.leg_arrival_date }}
+                        {{ item.details.1.leg_arrival_time }}<BR>
+                        {{ item.details.1.arrival_code }}
+                        {{ item.details.1.arrival_city }}
+                    </div>
+                    <div class="col-1">
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if item.legs == 2 %}
+            {% for smth in item.details %}
+            <div class="container">
+                <div class="row">
+                    <div class="col-1">
+                        {{ smth.1.airline }}<BR>
+                        {{ smth.1.flight_number }}
+                    </div>
+                    <div class="col-3">
+                        {{ smth.1.leg_departure_date }}
+                        {{ smth.1.leg_departure_time }}<br>
+                        {{ smth.1.depart_from_code }}
+                        {{ smth.1.depart_from_city }}
+                    </div>
+                    <div class="col-3">
+                        <span>&#10230;</span><BR>
+                        {{ smth.1.flight_time }}
+                    </div>
+                    <div class="col-3">
+                        {{ smth.1.leg_arrival_date }}
+                        {{ smth.1.leg_arrival_time }}<BR>
+                        {{ smth.1.arrival_code }}
+                        {{ smth.1.arrival_city }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-1">
+                        {{ smth.2.airline }}<BR>
+                        {{ smth.2.flight_number }}
+                    </div>
+                    <div class="col-3">
+                        {{ smth.2.leg_departure_date }}
+                        {{ smth.2.leg_departure_time }}<br>
+                        {{ smth.2.depart_from_code }}
+                        {{ smth.2.depart_from_city }}
+                    </div>
+                    <div class="col-3">
+                        {{ smth.2.flight_time }}
+                    </div>
+                    <div class="col-3">
+                        {{ smth.2.leg_arrival_date }}
+                        {{ smth.2.leg_arrival_time }}<BR>
+                        {{ smth.2.arrival_code }}
+                        {{ smth.2.arrival_city }}
+                    </div>
+                    <div class="col-1">
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% endif %}
+        {% if item.legs == 3 %}
+            {% for smth in item.details %}
+            <div class="container">
+                <div class="row">
+                    <div class="col-1">
+                        {{ smth.1.airline }}<BR>
+                        {{ smth.1.flight_number }}
+                    </div>
+                    <div class="col-3">
+                        {{ smth.1.leg_departure_date }}
+                        {{ smth.1.leg_departure_time }}<br>
+                        {{ smth.1.depart_from_code }}
+                        {{ smth.1.depart_from_city }}
+                    </div>
+                    <div class="col-3">
+                        <span>&#10230;</span><BR>
+                        {{ smth.1.flight_time }}
+                    </div>
+                    <div class="col-3">
+                        {{ smth.1.leg_arrival_date }}
+                        {{ smth.1.leg_arrival_time }}<BR>
+                        {{ smth.1.arrival_code }}
+                        {{ smth.1.arrival_city }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-1">
+                        {{ smth.2.airline }}<BR>
+                        {{ smth.2.flight_number }}
+                    </div>
+                    <div class="col-3">
+                        {{ smth.2.leg_departure_date }}
+                        {{ smth.2.leg_departure_time }}<br>
+                        {{ smth.2.depart_from_code }}
+                        {{ smth.2.depart_from_city }}
+                    </div>
+                    <div class="col-3">
+                        {{ smth.2.flight_time }}
+                    </div>
+                    <div class="col-3">
+                        {{ smth.2.leg_arrival_date }}
+                        {{ smth.2.leg_arrival_time }}<BR>
+                        {{ smth.2.arrival_code }}
+                        {{ smth.2.arrival_city }}
+                    </div>
+                    <div class="col-1">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-1">
+                        {{ smth.3.airline }}<BR>
+                        {{ smth.3.flight_number }}
+                    </div>
+                    <div class="col-3">
+                        {{ smth.3.leg_departure_date }}
+                        {{ smth.3.leg_departure_time }}<br>
+                        {{ smth.3.depart_from_code }}
+                        {{ smth.3.depart_from_city }}
+                    </div>
+                    <div class="col-3">
+                        {{ smth.3.flight_time }}
+                    </div>
+                    <div class="col-3">
+                        {{ smth.3.leg_arrival_date }}
+                        {{ smth.3.leg_arrival_time }}<BR>
+                        {{ smth.3.arrival_code }}
+                        {{ smth.3.arrival_city }}
+                    </div>
+                    <div class="col-1">
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% endif %}
+    </div><br>
     {% endfor %}
 
+{#{% for sss in ''|center:13 %}#}
+{#    {{ forloop.counter }}#}
+{#    {{ sss }}#}
+{#{% endfor %}#}
 {% endblock %}
