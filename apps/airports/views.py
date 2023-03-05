@@ -120,13 +120,14 @@ class RoutesSearch(View):
         #
         # response = requests.request("GET", url, headers=headers, params=parameter)
         # json_data = json.dumps(xmltodict.parse(response.text))
+        # json_object = json.loads(json_data)
+
         # with open("/home/wojciech/PycharmProjects/Tickets/data2.json", "w") as json_file:
         #     json_file.write(json_data)
-
-        with open("/home/wojciech/PycharmProjects/Tickets/data2.json", "r") as f:
+        #
+        with open("/home/wojciech/PycharmProjects/Tickets/data.json", "r") as f:
             json_object = json.load(f)
 
-        print(json_object)
         data_to_present = []
         idenfity = 1
         for item in json_object['OTA_AirDetailsRS']["FlightDetails"]:
