@@ -112,12 +112,4 @@ submitButton.addEventListener('click', ()=>{
     }
     }
 )
-// if moush click somewhere on page hide search results
-document.addEventListener('mouseup', function (ele) {
-    if (!departureCity.contains(ele.target)) {
-        departurelist.innerHTML = ''
-    }
-    else if (!arrivalCity.contains(ele.target)) {
-            arrivallist.innerHTML = ''
-    }
-})
+

@@ -4,3 +4,23 @@
     position: absolute;
     background-color: white;
 }
+
+.header {
+  overflow: hidden;
+  background-color: yellow;
+  padding: 20px 10px;
+}
+
+.header-text {
+    color: white;
+    text-align: center;
+}
+
+.a-href-link {
+    color: orangered;
+    text-decoration: none;
+}
+
+.logo {
+    height: 50px;
+}
