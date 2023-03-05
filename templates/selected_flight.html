@@ -1,67 +1,60 @@
 {% extends 'index.html' %}
 {% block script %}
     <script>
-        {#let departureCity = document.querySelector('#departure')#}
-        {#let arrivalCity = document.querySelector("#arrival")#}
-        document.addEventListener("DOMContentLoaded", ()=> {
-            let selectbutton = document.querySelectorAll('.select-button')
-            selectbutton.forEach((el)=> {
-                el.addEventListener('click', ()=> {
-                    window.location.href = `/results/option?selected=${el.value}`
-                })
-            })
-        })
-
-
+    document.addEventListener("DOMContentLoaded", ()=> {
+        let placeForName = document.querySelector('#traveler')
+    let addPersonButton = document.querySelector('.add-person-button')
+    addPersonButton.addEventListener('click', ()=>{
+        let newname = placeForName.cloneNode(true)
+        let newline = document.createElement('br')
+        placeForName.parentElement.insertBefore(newname, document.querySelector('#inserbeforeit'))
+        placeForName.parentElement.insertBefore(newline, document.querySelector('#inserbeforeit'))
+    })
+    })
     </script>
 {% endblock %}
 {% block content %}
-
-    {% for item in data %}
         <div class="border border-dark">
             <p class="text-center">
-                {{ item.departure_date }}
-                {{ item.departure_time }}
-                {{ item.depart_from_code }}
-                {{ item.depart_from_city}}
-                {{ item.arrival_date}}
-                {{ item.arrival_time }}
-                {{ item.arrival_code }}
-                {{ item.arrival_city }}
-                {{ item.total_trip_time}}
+                {{ data.departure_date }}
+                {{ data.departure_time }}
+                {{ data.depart_from_code }}
+                {{ data.depart_from_city}}
+                {{ data.arrival_date}}
+                {{ data.arrival_time }}
+                {{ data.arrival_code }}
+                {{ data.arrival_city }}
+                {{ data.total_trip_time}}
             </p>
             <div class="container">
                 <div class="row">
                     <div class="col-10">
                     </div>
-                    <div class="col-1">
-                        <button type="button" value="{{ item }}" class="btn btn-primary select-button">Wybierz</button>
-                    </div>
                 </div>
             </div>
 
-        {% if item.legs == 1 %}
+        {% if data.legs == 1 %}
             <div class="container">
                 <div class="row">
                     <div class="col-1">
-                        {{ item.details.1.airline }}<BR>
-                        {{ item.details.1.flight_number }}
+                        {{ data.details.1.airline }}<BR>
+                        {{ data.details.1.flight_number }}
                     </div>
                     <div class="col-3">
-                        {{ item.details.1.leg_departure_date }}
-                        {{ item.details.1.leg_departure_time }}<br>
-                        {{ item.details.1.depart_from_code }}
-                        {{ item.details.1.depart_from_city }}
+                        {{ data.details.1.leg_departure_date }}
+                        {{ data.details.1.leg_departure_time }}<br>
+                        {{ data.details.1.depart_from_code }}
+                        {{ data.details.1.depart_from_city }}
                     </div>
                     <div class="col-3">
                         <span>&#10230;</span><BR>
-                        {{ item.details.1.flight_time }}
+                        {{ data.details.1.flight_time }}
                     </div>
                     <div class="col-3">
-                        {{ item.details.1.leg_arrival_date }}
-                        {{ item.details.1.leg_arrival_time }}<BR>
-                        {{ item.details.1.arrival_code }}
-                        {{ item.details.1.arrival_city }}
+                        {{ data.details.1.leg_arrival_date }}
+                        {{ data.details.1.leg_arrival_time }}<BR>
+                        {{ data.details.1.arrival_code }}
+                        {{ data.details.1.arrival_city }}
                     </div>
                     <div class="col-1">
                     </div>
@@ -69,8 +62,8 @@
             </div>
         {% endif %}
 
-        {% if item.legs == 2 %}
-            {% for smth in item.details %}
+        {% if data.legs == 2 %}
+            {% for smth in data.details %}
             <div class="container">
                 <div class="row">
                     <div class="col-1">
@@ -120,8 +113,8 @@
             </div>
             {% endfor %}
         {% endif %}
-        {% if item.legs == 3 %}
-            {% for smth in item.details %}
+        {% if data.legs == 3 %}
+            {% for smth in data.details %}
             <div class="container">
                 <div class="row">
                     <div class="col-1">
@@ -194,11 +187,15 @@
             </div>
             {% endfor %}
         {% endif %}
-    </div><br>
-    {% endfor %}
 
-{#{% for sss in ''|center:13 %}#}
-{#    {{ forloop.counter }}#}
-{#    {{ sss }}#}
-{#{% endfor %}#}
+    </div><br>
+
+    <form>
+    <input type="text" name="nameoftraveler" placeholder="First and last name" id="traveler" class="m-1">
+    <button type="button" class="btn btn-primary btn-sm add-person-button">Dodaj kolejną osobę</button>
+    <br>
+    <input type="hidden" value="{{ data }}" name="flightdetails" id="inserbeforeit">
+    <input type="submit" value="Wygeneruj bilet" class="btn btn-primary">
+    </form>
+
 {% endblock %}

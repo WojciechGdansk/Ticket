@@ -149,8 +149,15 @@ class RoutesSearch(View):
             idenfity +=1
         airport_from = Airports.objects.get(iata=departure_airport)
         print(data_to_present)
-
+        print(type(data_to_present[0]))
         context = {'data': data_to_present}
         # return redirect(reverse("results"))
         return render(request, 'results.html', context=context)
 
+
+class SelectedFlight(View):
+    def get(self, request, slug):
+        selected_flight = request.GET.get('selected')
+        selected_flight = selected_flight.replace("'", '"')
+        selected_flight = json.loads(selected_flight)
+        return render(request, 'selected_flight.html', context={"data": selected_flight})
