@@ -6,6 +6,7 @@
     let addPersonButton = document.querySelector('.add-person-button')
     addPersonButton.addEventListener('click', ()=>{
         let newname = placeForName.cloneNode(true)
+        newname.value=''
         let newline = document.createElement('br')
         placeForName.parentElement.insertBefore(newname, document.querySelector('#inserbeforeit'))
         placeForName.parentElement.insertBefore(newline, document.querySelector('#inserbeforeit'))
@@ -190,7 +191,8 @@
 
     </div><br>
 
-    <form>
+    <form method="post">
+    {% csrf_token %}
     <input type="text" name="nameoftraveler" placeholder="First and last name" id="traveler" class="m-1">
     <button type="button" class="btn btn-primary btn-sm add-person-button">Dodaj kolejną osobę</button>
     <br>

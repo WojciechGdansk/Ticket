@@ -19,6 +19,13 @@
     <a href="{% url 'main_view' %}" class="a-href-link"><img src="{% static 'logo3.png' %}" alt="Cheap travel" class="logo"> Cheap Travel Agency</a>
     </div>
 </header>
+{% if messages %}
+    <ul class="messages">
+    {% for message in messages %}
+        <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+{% endif %}
 <div class="container mt-5">
 <div class="row">
     <div id="divfordepartureli" class="col-sm">

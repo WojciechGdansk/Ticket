@@ -79,37 +79,26 @@ submitButton.addEventListener('click', ()=>{
         alert("Uzupełnij wszystkie pola")
     }
     else {
-        let encodedDepartureCity = encodeURIComponent(departureCity.value)
-        fetch(`/airports/airport?airport=${encodedDepartureCity}`).then(resp => {
-        if (!resp.ok) {
-            alert("Błąd")
-        }
-        return resp.json();
-    })
-        .then((resp)=>{
-            let departFrom = resp.result[0]['iata']
-            localStorage.setItem("departure", departFrom)
-            })
-        let encodedArrivalCity = encodeURIComponent(arrivalCity.value)
-        fetch(`/airports/airport?airport=${encodedArrivalCity}` )
-            .then(resp=>{
-                if (!resp.ok) {
-                    alert("Nie ma takiego lotniska")
-                }
-                return resp.json()
-            })
-            .then((resp)=>{
-                let arriveTo = resp.result[0]['iata']
-                localStorage.setItem('arrival', arriveTo)
-            })
-
-        if (localStorage.getItem('departure') === localStorage.getItem('arrival')) {
-            alert("Wylot i przylot na to samo lotnisko- błąd")
-        }
-        window.location.href = `/routes/search?depart=${localStorage.getItem('departure')}&arrive=${localStorage.getItem('arrival')}&date=${flightDate.value}`
-        localStorage.clear()
-
+        send()
     }
+
     }
 )
 
+async function checkAirport(airport) {
+        const encodedCity = encodeURIComponent(airport)
+        const response = await fetch(`/airports/airport?airport=${encodedCity}`)
+        if (!response.ok) {
+            alert("Błąd")
+            return
+        }
+        const data = await response.json()
+        return data.result[0]['iata']
+
+}
+
+async function send() {
+    const departureAirport = await checkAirport(departureCity.value)
+    const arriveAirport = await checkAirport(arrivalCity.value)
+    window.location.href = `/routes/search?depart=${departureAirport}&arrive=${arriveAirport}&date=${flightDate.value}`
+}

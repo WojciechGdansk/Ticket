@@ -24,7 +24,7 @@ urlpatterns = [
     path('', views.MainView.as_view(), name="main_view"),
     path('airports/<slug:slug>', views.AirportSearch.as_view()),
     path('routes/<slug:slug>', views.RoutesSearch.as_view()),
-    path('results/<slug:slug>', views.SelectedFlight.as_view()),
+    path('results/<slug:slug>', views.SelectedFlight.as_view(), name="results"),
 
 
 ]
