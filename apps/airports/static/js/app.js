@@ -6,6 +6,7 @@ let arrivallist = document.querySelector('#arrivallist')
 let elementLi = document.querySelector('#element-li')
 let elementLiArrival = document.querySelector('#element-li-arrival')
 let submitButton = document.querySelector('#submit-button')
+let datainput = document.querySelectorAll('.fields-to-fill')
 
 departureCity.addEventListener('keyup', ()=> {
     departurelist.innerHTML = ''
@@ -111,3 +112,12 @@ submitButton.addEventListener('click', ()=>{
     }
     }
 )
+// if moush click somewhere on page hide search results
+document.addEventListener('mouseup', function (ele) {
+    if (!departureCity.contains(ele.target)) {
+        departurelist.innerHTML = ''
+    }
+    else if (!arrivalCity.contains(ele.target)) {
+            arrivallist.innerHTML = ''
+    }
+})
