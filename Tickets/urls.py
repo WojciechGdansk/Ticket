@@ -20,7 +20,6 @@ from apps.airports import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('airportlist/', views.AirportList.as_view()),
     path('', views.MainView.as_view(), name="main_view"),
     path('airports/<slug:slug>', views.AirportSearch.as_view()),
     path('routes/<slug:slug>', views.RoutesSearch.as_view()),

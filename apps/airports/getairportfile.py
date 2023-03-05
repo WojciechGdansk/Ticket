@@ -21,49 +21,44 @@ def correct_name(iatacode):
         correct_city = correct_airport_name
     return [correct_airport_name, correct_city]
 
+def download_airports_to_db():
+    url = "https://airports-iata.p.rapidapi.com/airports"
 
+    headers = {
+        "X-RapidAPI-Key": API_KEY,
+        "X-RapidAPI-Host": "airports-iata.p.rapidapi.com"
+    }
 
-url = "https://airports-iata.p.rapidapi.com/airports"
+    response = requests.request("GET", url, headers=headers)
+    with open("/home/wojciech/PycharmProjects/Tickets/airportslist.json", "w") as json_file:
+        json_file.write(response.text)
 
-headers = {
-    "X-RapidAPI-Key": API_KEY,
-    "X-RapidAPI-Host": "airports-iata.p.rapidapi.com"
-}
+    with open("/home/wojciech/PycharmProjects/Tickets/airportslist.json", "r") as f:
+        res = f.read()
 
-response = requests.request("GET", url, headers=headers)
+    final = json.loads(res)
 
-with open("/home/wojciech/PycharmProjects/Tickets/airportslist.json", "w") as json_file:
-    json_file.write(response.text)
+    final_airports_db = open("/home/wojciech/PycharmProjects/Tickets/finalairports.json", "w")
+    final_airports_list = []
 
-
-with open("/home/wojciech/PycharmProjects/Tickets/airportslist.json", "r") as f:
-    res = f.read()
-
-final = json.loads(res)
-
-final_airports_db = open("/home/wojciech/PycharmProjects/Tickets/finalairports.json", "w")
-final_airports_list = []
-
-for item in final:
-    try:
-        if "?" in item['locationName'] or "?" in item['location']:
-            try:
-                print(item)
-                airport = item['iataCode']
-                fixed_names = correct_name(airport)
-                item['locationName'] = fixed_names[0]
-                item['location'] = fixed_names[1]
-                print(item)
+    for item in final:
+        try:
+            if "?" in item['locationName'] or "?" in item['location']:
+                try:
+                    airport = item['iataCode']
+                    fixed_names = correct_name(airport)
+                    item['locationName'] = fixed_names[0]
+                    item['location'] = fixed_names[1]
+                    final_airports_list.append(item)
+                except:
+                    continue
+            else:
                 final_airports_list.append(item)
-            except:
-                continue
-        else:
-            final_airports_list.append(item)
-    except TypeError:
-        continue
+        except TypeError:
+            continue
 
-final_airports_db.write(json.dumps(final_airports_list))
-final_airports_db.close()
+    final_airports_db.write(json.dumps(final_airports_list))
+    final_airports_db.close()
 
 
 

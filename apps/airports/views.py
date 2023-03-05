@@ -297,12 +297,6 @@ def generate_pdf(cleared_names, flight):
 
 
 # Create your views here.
-class AirportList(View):
-    def get(self, request):
-        with open("/home/wojciech/PycharmProjects/Tickets/airportsapi.txt", "r") as f:
-            json_object = json.load(f)
-            return HttpResponse(json_object)
-
 
 class MainView(View):
     def get(self, request):
@@ -381,7 +375,6 @@ class RoutesSearch(View):
             idenfity +=1
         airport_from = Airports.objects.get(iata=departure_airport)
         context = {'data': data_to_present}
-        # return redirect(reverse("results"))
         return render(request, 'results.html', context=context)
 
 
@@ -406,5 +399,4 @@ class SelectedFlight(View):
             return redirect(f"/results/error?selected={flight}")
         flight = flight.replace("'", '"')
         flight = json.loads(flight)
-        print(flight)
         return generate_pdf(cleared_names, flight)
