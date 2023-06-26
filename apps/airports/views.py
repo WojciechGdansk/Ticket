@@ -105,7 +105,7 @@ def generate_pdf(cleared_names, flight):
     ticket_name = f"{booking + cleared_names[0]}.pdf"
     plik = io.BytesIO()
     ticket = canvas.Canvas(plik, pagesize=A4)
-    ticket.drawImage("/home/wojciech/PycharmProjects/Tickets/apps/airports/static/logowithwhite.jpg", 270, 785,
+    ticket.drawImage("apps/airports/static/logowithwhite.jpg", 270, 785,
                      width=50, height=50)
     ticket.drawString(20, 770, "cheaptravel.agency/contact")
     ticket.drawString(100, 800, "CHEAP TRAVEL AGENCY")
@@ -155,7 +155,7 @@ def generate_pdf(cleared_names, flight):
         ticket.drawString(370, 410, f"{flight['details']['1']['leg_arrival_time']}")
         ticket.drawString(300, 430, f"{flight['details']['1']['flight_time']}")
         ticket.line(115, 530, 115, 390)
-        ticket.drawImage("/home/wojciech/PycharmProjects/Tickets/apps/airports/static/airplane.jpg", 300, 440,
+        ticket.drawImage("apps/airports/static/airplane.jpg", 300, 440,
                          width=50, height=50)
         ticket.line(20, 385, 580, 385)
         ticket.drawString(50, 370, f"Passengers:")
@@ -183,7 +183,7 @@ def generate_pdf(cleared_names, flight):
         ticket.drawString(370, 410, f"{flight['details'][0]['1']['leg_arrival_time']}")
         ticket.drawString(300, 430, f"{flight['details'][0]['1']['flight_time']}")
         ticket.line(115, 530, 115, 390)
-        ticket.drawImage("/home/wojciech/PycharmProjects/Tickets/apps/airports/static/airplane.jpg", 300, 440,
+        ticket.drawImage("apps/airports/static/airplane.jpg", 300, 440,
                          width=50, height=50)
         ticket.line(20, 385, 580, 385)
         ticket.drawString(50, 370, f"Passengers:")
@@ -212,7 +212,7 @@ def generate_pdf(cleared_names, flight):
         ticket.drawString(120, new_line_cords_y - 130, f"{flight['details'][1]['2']['leg_departure_time']}")
         ticket.drawString(370, new_line_cords_y - 130, f"{flight['details'][1]['2']['leg_arrival_time']}")
         ticket.drawString(300, new_line_cords_y - 110, f"{flight['details'][1]['2']['flight_time']}")
-        ticket.drawImage("/home/wojciech/PycharmProjects/Tickets/apps/airports/static/airplane.jpg", 300,
+        ticket.drawImage("apps/airports/static/airplane.jpg", 300,
                          new_line_cords_y - 100, width=50, height=50)
         ticket.line(20, new_line_cords_y - 155, 580, new_line_cords_y - 155)
         ticket.drawString(50, new_line_cords_y - 170, f"Passengers:")
@@ -239,7 +239,7 @@ def generate_pdf(cleared_names, flight):
         ticket.drawString(370, 410, f"{flight['details'][0]['1']['leg_arrival_time']}")
         ticket.drawString(300, 430, f"{flight['details'][0]['1']['flight_time']}")
         ticket.line(115, 530, 115, 390)
-        ticket.drawImage("/home/wojciech/PycharmProjects/Tickets/apps/airports/static/airplane.jpg", 300, 440,
+        ticket.drawImage("apps/airports/static/airplane.jpg", 300, 440,
                          width=50, height=50)
         ticket.line(20, 385, 580, 385)
         ticket.drawString(50, 370, f"Passengers:")
@@ -268,7 +268,7 @@ def generate_pdf(cleared_names, flight):
         ticket.drawString(120, new_line_cords_y - 130, f"{flight['details'][1]['2']['leg_departure_time']}")
         ticket.drawString(370, new_line_cords_y - 130, f"{flight['details'][1]['2']['leg_arrival_time']}")
         ticket.drawString(300, new_line_cords_y - 110, f"{flight['details'][1]['2']['flight_time']}")
-        ticket.drawImage("/home/wojciech/PycharmProjects/Tickets/apps/airports/static/airplane.jpg", 300,
+        ticket.drawImage("apps/airports/static/airplane.jpg", 300,
                          new_line_cords_y - 100, width=50, height=50)
         ticket.line(20, new_line_cords_y - 155, 580, new_line_cords_y - 155)
         ticket.drawString(50, new_line_cords_y - 170, f"Passengers:")
@@ -298,7 +298,7 @@ def generate_pdf(cleared_names, flight):
         ticket.drawString(120, new_line_cords_y - 130, f"{flight['details'][2]['3']['leg_departure_time']}")
         ticket.drawString(370, new_line_cords_y - 130, f"{flight['details'][2]['3']['leg_arrival_time']}")
         ticket.drawString(300, new_line_cords_y - 110, f"{flight['details'][2]['3']['flight_time']}")
-        ticket.drawImage("/home/wojciech/PycharmProjects/Tickets/apps/airports/static/airplane.jpg", 300,
+        ticket.drawImage("apps/airports/static/airplane.jpg", 300,
                          new_line_cords_y - 100, width=50, height=50)
         ticket.line(20, new_line_cords_y - 155, 580, new_line_cords_y - 155)
         ticket.drawString(50, new_line_cords_y - 170, f"Passengers:")
