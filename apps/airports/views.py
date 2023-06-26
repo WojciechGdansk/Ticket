@@ -3,7 +3,7 @@ import json
 import datetime
 import xmltodict
 from django.db.models import Q
-from django.http import HttpResponse, JsonResponse, FileResponse
+from django.http import JsonResponse, FileResponse
 from django.shortcuts import render, redirect, reverse
 from django.views import View
 from apps.airports.models import Airports
@@ -14,6 +14,7 @@ from reportlab.lib.pagesizes import A4
 import random
 import string
 from django.contrib import messages
+
 
 # change utc time to local time
 def get_local_timedate(date, offset):
@@ -46,14 +47,18 @@ def prepare_flight_details(flightleg):
     if type(flightleg) is dict:
         result = {
             flightleg['@SequenceNumber']: {
-                "leg_departure_date": get_local_timedate(flightleg['@DepartureDateTime'], flightleg['@FLSDepartureTimeOffset'])[
-                    'date'],
-                "leg_departure_time": get_local_timedate(flightleg['@DepartureDateTime'], flightleg['@FLSDepartureTimeOffset'])[
-                    'time'],
+                "leg_departure_date":
+                    get_local_timedate(flightleg['@DepartureDateTime'], flightleg['@FLSDepartureTimeOffset'])[
+                        'date'],
+                "leg_departure_time":
+                    get_local_timedate(flightleg['@DepartureDateTime'], flightleg['@FLSDepartureTimeOffset'])[
+                        'time'],
                 "depart_from_code": flightleg['DepartureAirport']['@LocationCode'],
                 "depart_from_city": flightleg['DepartureAirport']['@FLSLocationName'],
-                "leg_arrival_date": get_local_timedate(flightleg['@ArrivalDateTime'], flightleg['@FLSArrivalTimeOffset'])['date'],
-                "leg_arrival_time": get_local_timedate(flightleg['@ArrivalDateTime'], flightleg['@FLSArrivalTimeOffset'])['time'],
+                "leg_arrival_date":
+                    get_local_timedate(flightleg['@ArrivalDateTime'], flightleg['@FLSArrivalTimeOffset'])['date'],
+                "leg_arrival_time":
+                    get_local_timedate(flightleg['@ArrivalDateTime'], flightleg['@FLSArrivalTimeOffset'])['time'],
                 "arrival_code": flightleg['ArrivalAirport']['@LocationCode'],
                 "arrival_city": flightleg['ArrivalAirport']['@FLSLocationName'],
                 "flight_time": flightleg['@JourneyDuration'][2:],
@@ -68,27 +73,32 @@ def prepare_flight_details(flightleg):
             final.append(prepare_flight_details(leg))
     return final
 
+
 def booking_generator(length=6):
     characters = string.ascii_uppercase + string.digits
     result = "".join(random.choice(characters) for i in range(length))
     return result
 
+
 def generate_passengers(passengers, startpointX, startpointY, file):
     for item in passengers:
         file.drawString(startpointX, startpointY, f"{item}")
-        file.drawString(startpointX+300, startpointY, "1 bag(s) x 23kg")
-        startpointY -=20
-        if startpointY<=30:
+        file.drawString(startpointX + 300, startpointY, "1 bag(s) x 23kg")
+        startpointY -= 20
+        if startpointY <= 30:
             file.showPage()
-            startpointY = 800 #if page breaking point create new page and start from top
+            startpointY = 800  # if page breaking point create new page and start from top
     return startpointY
+
 
 def long_airline_name_break(airline, file, startpointX, startpointY, flightnumber):
     airline = airline.split()
     for item in airline:
         file.drawString(startpointX, startpointY, item)
-        startpointY -=20
+        startpointY -= 20
     file.drawString(startpointX, startpointY, flightnumber)
+
+
 def generate_pdf(cleared_names, flight):
     booking = booking_generator()
     airline_reference = booking_generator()
@@ -119,7 +129,8 @@ def generate_pdf(cleared_names, flight):
     ticket.line(20, 650, 580, 650)
     ticket.drawString(40, 630, "IMPORTANT: PRINT OUT THIS TRAVEL DOCUMENT AND BRING IT WITH YOU ON YOUR")
     ticket.drawString(220, 610, "ALONG WITH YOUR VALID PASSPORT.")
-    ticket.drawString(30, 580, "Stay up to date on any schedule changes by checking www.checkmytrip.com or directly via the carrier.")
+    ticket.drawString(30, 580,
+                      "Stay up to date on any schedule changes by checking www.checkmytrip.com or directly via the carrier.")
     ticket.drawString(30, 560, "It is the passenger's responsibility to stay updated on changes of flight times.")
     ticket.line(20, 540, 580, 540)
     if flight['legs'] == 1:
@@ -128,7 +139,8 @@ def generate_pdf(cleared_names, flight):
         ticket.drawString(120, 500, "DEPARTURE")
         ticket.drawString(370, 500, "ARRIVAL")
         ticket.setFont("Helvetica", 16)
-        long_airline_name_break(flight['details']['1']['airline'], ticket, 40, 470, flight['details']['1']['flight_number'])
+        long_airline_name_break(flight['details']['1']['airline'], ticket, 40, 470,
+                                flight['details']['1']['flight_number'])
         # ticket.drawString(40, 470, f"{flight['details']['1']['airline']}")
         # ticket.drawString(40, 450, f"{flight['details']['1']['flight_number']}")
         ticket.drawString(120, 470, f"{flight['details']['1']['depart_from_city']}")
@@ -157,61 +169,8 @@ def generate_pdf(cleared_names, flight):
         ticket.drawString(120, 500, "DEPARTURE")
         ticket.drawString(370, 500, "ARRIVAL")
         ticket.setFont("Helvetica", 16)
-        long_airline_name_break(flight['details'][0]['1']['airline'], ticket, 40, 470, flight['details'][0]['1']['flight_number'])
-        ticket.drawString(120, 470, f"{flight['details'][0]['1']['depart_from_city']}")
-        ticket.drawString(370, 470, f"{flight['details'][0]['1']['arrival_city']}")
-        ticket.setFont("Helvetica", 8)
-        ticket.drawString(120, 450, f"{flight['details'][0]['1']['depart_from_code']}")
-        ticket.drawString(370, 450, f"{flight['details'][0]['1']['arrival_code']}")
-        ticket.setFont("Helvetica", 10)
-        ticket.drawString(120, 430, f"{flight['details'][0]['1']['leg_departure_date']}")
-        ticket.drawString(370, 430, f"{flight['details'][0]['1']['leg_arrival_date']}")
-        ticket.drawString(120, 410, f"{flight['details'][0]['1']['leg_departure_time']}")
-        ticket.drawString(370, 410, f"{flight['details'][0]['1']['leg_arrival_time']}")
-        ticket.drawString(300, 430, f"{flight['details'][0]['1']['flight_time']}")
-        ticket.line(115, 530, 115, 390)
-        ticket.drawImage("/home/wojciech/PycharmProjects/Tickets/apps/airports/static/airplane.jpg", 300, 440,
-                         width=50, height=50)
-        ticket.line(20, 385, 580, 385)
-        ticket.drawString(50, 370, f"Passengers:")
-        ticket.drawString(350, 370, f"Baggage allowance:")
-        new_line_cords_y = generate_passengers(cleared_names, 50, 350, ticket)
-        if new_line_cords_y -250 <=0: #if page breaking point create new page and start from top
-            ticket.showPage()
-            new_line_cords_y = 800
-        # Second leg of trip
-        ticket.line(20, new_line_cords_y, 580, new_line_cords_y)
-        ticket.setFont("Helvetica", 20)
-        ticket.drawString(40, new_line_cords_y-40, "FLIGHT")
-        ticket.drawString(120, new_line_cords_y-40, "DEPARTURE")
-        ticket.drawString(370, new_line_cords_y-40, "ARRIVAL")
-        ticket.setFont("Helvetica", 16)
-        long_airline_name_break(flight['details'][1]['2']['airline'], ticket, 40, new_line_cords_y-70, flight['details'][1]['2']['flight_number'])
-        ticket.drawString(120, new_line_cords_y-70, f"{flight['details'][1]['2']['depart_from_city']}")
-        ticket.drawString(370, new_line_cords_y-70, f"{flight['details'][1]['2']['arrival_city']}")
-        ticket.setFont("Helvetica", 8)
-        ticket.drawString(120, new_line_cords_y-90, f"{flight['details'][1]['2']['depart_from_code']}")
-        ticket.drawString(370, new_line_cords_y-90, f"{flight['details'][1]['2']['arrival_code']}")
-        ticket.setFont("Helvetica", 10)
-        ticket.drawString(120, new_line_cords_y-110, f"{flight['details'][1]['2']['leg_departure_date']}")
-        ticket.drawString(370, new_line_cords_y-110, f"{flight['details'][1]['2']['leg_arrival_date']}")
-        ticket.drawString(120, new_line_cords_y-130, f"{flight['details'][1]['2']['leg_departure_time']}")
-        ticket.drawString(370, new_line_cords_y-130, f"{flight['details'][1]['2']['leg_arrival_time']}")
-        ticket.drawString(300, new_line_cords_y-110, f"{flight['details'][1]['2']['flight_time']}")
-        ticket.drawImage("/home/wojciech/PycharmProjects/Tickets/apps/airports/static/airplane.jpg", 300,
-                         new_line_cords_y-100, width=50, height=50)
-        ticket.line(20, new_line_cords_y-155, 580, new_line_cords_y-155)
-        ticket.drawString(50, new_line_cords_y-170, f"Passengers:")
-        ticket.drawString(350, new_line_cords_y-170, f"Baggage allowance:")
-        ticket.line(115, new_line_cords_y-10, 115, new_line_cords_y-150)
-        new_line_cords_y = generate_passengers(cleared_names, 50, new_line_cords_y-190, ticket)
-    if flight['legs'] == 3:
-        ticket.setFont("Helvetica", 20)
-        ticket.drawString(40, 500, "FLIGHT")
-        ticket.drawString(120, 500, "DEPARTURE")
-        ticket.drawString(370, 500, "ARRIVAL")
-        ticket.setFont("Helvetica", 16)
-        long_airline_name_break(flight['details'][0]['1']['airline'], ticket, 40, 470, flight['details'][0]['1']['flight_number'])
+        long_airline_name_break(flight['details'][0]['1']['airline'], ticket, 40, 470,
+                                flight['details'][0]['1']['flight_number'])
         ticket.drawString(120, 470, f"{flight['details'][0]['1']['depart_from_city']}")
         ticket.drawString(370, 470, f"{flight['details'][0]['1']['arrival_city']}")
         ticket.setFont("Helvetica", 8)
@@ -240,7 +199,64 @@ def generate_pdf(cleared_names, flight):
         ticket.drawString(120, new_line_cords_y - 40, "DEPARTURE")
         ticket.drawString(370, new_line_cords_y - 40, "ARRIVAL")
         ticket.setFont("Helvetica", 16)
-        long_airline_name_break(flight['details'][1]['2']['airline'], ticket, 40, new_line_cords_y-70, flight['details'][1]['2']['flight_number'])
+        long_airline_name_break(flight['details'][1]['2']['airline'], ticket, 40, new_line_cords_y - 70,
+                                flight['details'][1]['2']['flight_number'])
+        ticket.drawString(120, new_line_cords_y - 70, f"{flight['details'][1]['2']['depart_from_city']}")
+        ticket.drawString(370, new_line_cords_y - 70, f"{flight['details'][1]['2']['arrival_city']}")
+        ticket.setFont("Helvetica", 8)
+        ticket.drawString(120, new_line_cords_y - 90, f"{flight['details'][1]['2']['depart_from_code']}")
+        ticket.drawString(370, new_line_cords_y - 90, f"{flight['details'][1]['2']['arrival_code']}")
+        ticket.setFont("Helvetica", 10)
+        ticket.drawString(120, new_line_cords_y - 110, f"{flight['details'][1]['2']['leg_departure_date']}")
+        ticket.drawString(370, new_line_cords_y - 110, f"{flight['details'][1]['2']['leg_arrival_date']}")
+        ticket.drawString(120, new_line_cords_y - 130, f"{flight['details'][1]['2']['leg_departure_time']}")
+        ticket.drawString(370, new_line_cords_y - 130, f"{flight['details'][1]['2']['leg_arrival_time']}")
+        ticket.drawString(300, new_line_cords_y - 110, f"{flight['details'][1]['2']['flight_time']}")
+        ticket.drawImage("/home/wojciech/PycharmProjects/Tickets/apps/airports/static/airplane.jpg", 300,
+                         new_line_cords_y - 100, width=50, height=50)
+        ticket.line(20, new_line_cords_y - 155, 580, new_line_cords_y - 155)
+        ticket.drawString(50, new_line_cords_y - 170, f"Passengers:")
+        ticket.drawString(350, new_line_cords_y - 170, f"Baggage allowance:")
+        ticket.line(115, new_line_cords_y - 10, 115, new_line_cords_y - 150)
+        new_line_cords_y = generate_passengers(cleared_names, 50, new_line_cords_y - 190, ticket)
+    if flight['legs'] == 3:
+        ticket.setFont("Helvetica", 20)
+        ticket.drawString(40, 500, "FLIGHT")
+        ticket.drawString(120, 500, "DEPARTURE")
+        ticket.drawString(370, 500, "ARRIVAL")
+        ticket.setFont("Helvetica", 16)
+        long_airline_name_break(flight['details'][0]['1']['airline'], ticket, 40, 470,
+                                flight['details'][0]['1']['flight_number'])
+        ticket.drawString(120, 470, f"{flight['details'][0]['1']['depart_from_city']}")
+        ticket.drawString(370, 470, f"{flight['details'][0]['1']['arrival_city']}")
+        ticket.setFont("Helvetica", 8)
+        ticket.drawString(120, 450, f"{flight['details'][0]['1']['depart_from_code']}")
+        ticket.drawString(370, 450, f"{flight['details'][0]['1']['arrival_code']}")
+        ticket.setFont("Helvetica", 10)
+        ticket.drawString(120, 430, f"{flight['details'][0]['1']['leg_departure_date']}")
+        ticket.drawString(370, 430, f"{flight['details'][0]['1']['leg_arrival_date']}")
+        ticket.drawString(120, 410, f"{flight['details'][0]['1']['leg_departure_time']}")
+        ticket.drawString(370, 410, f"{flight['details'][0]['1']['leg_arrival_time']}")
+        ticket.drawString(300, 430, f"{flight['details'][0]['1']['flight_time']}")
+        ticket.line(115, 530, 115, 390)
+        ticket.drawImage("/home/wojciech/PycharmProjects/Tickets/apps/airports/static/airplane.jpg", 300, 440,
+                         width=50, height=50)
+        ticket.line(20, 385, 580, 385)
+        ticket.drawString(50, 370, f"Passengers:")
+        ticket.drawString(350, 370, f"Baggage allowance:")
+        new_line_cords_y = generate_passengers(cleared_names, 50, 350, ticket)
+        if new_line_cords_y - 250 <= 0:  # if page breaking point create new page and start from top
+            ticket.showPage()
+            new_line_cords_y = 800
+        # Second leg of trip
+        ticket.line(20, new_line_cords_y, 580, new_line_cords_y)
+        ticket.setFont("Helvetica", 20)
+        ticket.drawString(40, new_line_cords_y - 40, "FLIGHT")
+        ticket.drawString(120, new_line_cords_y - 40, "DEPARTURE")
+        ticket.drawString(370, new_line_cords_y - 40, "ARRIVAL")
+        ticket.setFont("Helvetica", 16)
+        long_airline_name_break(flight['details'][1]['2']['airline'], ticket, 40, new_line_cords_y - 70,
+                                flight['details'][1]['2']['flight_number'])
         ticket.drawString(120, new_line_cords_y - 70, f"{flight['details'][1]['2']['depart_from_city']}")
         ticket.drawString(370, new_line_cords_y - 70, f"{flight['details'][1]['2']['arrival_city']}")
         ticket.setFont("Helvetica", 8)
@@ -269,7 +285,8 @@ def generate_pdf(cleared_names, flight):
         ticket.drawString(120, new_line_cords_y - 40, "DEPARTURE")
         ticket.drawString(370, new_line_cords_y - 40, "ARRIVAL")
         ticket.setFont("Helvetica", 16)
-        long_airline_name_break(flight['details'][2]['3']['airline'], ticket, 40, new_line_cords_y-70, flight['details'][2]['3']['flight_number'])
+        long_airline_name_break(flight['details'][2]['3']['airline'], ticket, 40, new_line_cords_y - 70,
+                                flight['details'][2]['3']['flight_number'])
         ticket.drawString(120, new_line_cords_y - 70, f"{flight['details'][2]['3']['depart_from_city']}")
         ticket.drawString(370, new_line_cords_y - 70, f"{flight['details'][2]['3']['arrival_city']}")
         ticket.setFont("Helvetica", 8)
@@ -288,7 +305,6 @@ def generate_pdf(cleared_names, flight):
         ticket.drawString(350, new_line_cords_y - 170, f"Baggage allowance:")
         ticket.line(115, new_line_cords_y - 10, 115, new_line_cords_y - 150)
         new_line_cords_y = generate_passengers(cleared_names, 50, new_line_cords_y - 190, ticket)
-
 
     ticket.showPage()
     ticket.save()
@@ -345,12 +361,6 @@ class RoutesSearch(View):
         json_data = json.dumps(xmltodict.parse(response.text))
         json_object = json.loads(json_data)
 
-        # with open("/home/wojciech/PycharmProjects/Tickets/data2.json", "w") as json_file:
-        #     json_file.write(json_data)
-        #
-        # with open("/home/wojciech/PycharmProjects/Tickets/data.json", "r") as f:
-        #     json_object = json.load(f)
-
         data_to_present = []
         idenfity = 1
         if "Errors" in json_object['OTA_AirDetailsRS']:
@@ -360,8 +370,10 @@ class RoutesSearch(View):
             specific_flight = {
                 "id": idenfity,
                 "total_trip_time": item['@TotalTripTime'][2:],
-                "departure_date": get_local_timedate(item['@FLSDepartureDateTime'], item['@FLSDepartureTimeOffset'])['date'],
-                "departure_time": get_local_timedate(item['@FLSDepartureDateTime'], item['@FLSDepartureTimeOffset'])['time'],
+                "departure_date": get_local_timedate(item['@FLSDepartureDateTime'], item['@FLSDepartureTimeOffset'])[
+                    'date'],
+                "departure_time": get_local_timedate(item['@FLSDepartureDateTime'], item['@FLSDepartureTimeOffset'])[
+                    'time'],
                 "depart_from_code": item["@FLSDepartureCode"],
                 "depart_from_city": item['@FLSDepartureName'],
                 "arrival_date": get_local_timedate(item['@FLSArrivalDateTime'], item['@FLSArrivalTimeOffset'])['date'],
@@ -372,7 +384,7 @@ class RoutesSearch(View):
                 'details': prepare_flight_details(item['FlightLegDetails']),
             }
             data_to_present.append(specific_flight)
-            idenfity +=1
+            idenfity += 1
         airport_from = Airports.objects.get(iata=departure_airport)
         context = {'data': data_to_present}
         return render(request, 'results.html', context=context)
